@@ -5,9 +5,11 @@ import pytesseract
 from PIL import Image
 from pdf2image import convert_from_bytes
 
+# Store processed invoices
 if "invoice_db" not in st.session_state:
     st.session_state.invoice_db = []
 
+# Fraud detection function
 def fraud_detection(invoice_number, total):
 
     warnings = []
@@ -24,7 +26,7 @@ def fraud_detection(invoice_number, total):
         pass
 
     return warnings
-# Tell Python where Tesseract is installed
+
 
 # App title
 st.title("AI Invoice Auditor")
@@ -50,35 +52,40 @@ if uploaded_file is not None:
     st.subheader("Invoice Preview")
     st.image(image, use_container_width=True)
 
-    # OCR text extraction
+    # OCR extraction
     st.subheader("Extracting Text...")
     text = pytesseract.image_to_string(image)
+
+    # Extract invoice number
     invoice_match = re.search(r"Invoice\s*No[:\s]*([A-Z0-9]+)", text)
-invoice_number = invoice_match.group(1) if invoice_match else "Unknown"
+    invoice_number = invoice_match.group(1) if invoice_match else "Unknown"
 
-total_match = re.search(r"Total.*?([0-9,]+\.[0-9]{2})", text)
-total_amount = total_match.group(1) if total_match else "0"
+    # Extract total amount
+    total_match = re.search(r"Total.*?([0-9,]+\.[0-9]{2})", text)
+    total_amount = total_match.group(1) if total_match else "0"
 
-warnings = fraud_detection(invoice_number, total_amount)
+    # Fraud detection
+    warnings = fraud_detection(invoice_number, total_amount)
 
-st.subheader("Fraud Detection")
+    st.subheader("Fraud Detection")
 
-if warnings:
-    for w in warnings:
-        st.error(w)
-else:
-    st.success("No fraud signals detected")
+    if warnings:
+        for w in warnings:
+            st.error(w)
+    else:
+        st.success("No fraud signals detected")
 
-st.session_state.invoice_db.append({
-    "invoice_number": invoice_number,
-    "total": total_amount
-})
+    # Store invoice in memory
+    st.session_state.invoice_db.append({
+        "invoice_number": invoice_number,
+        "total": total_amount
+    })
 
-    # Display extracted text
- st.subheader("Extracted Invoice Text")
-st.text_area("Invoice Data", text, height=300)
+    # Show extracted text
+    st.subheader("Extracted Invoice Text")
+    st.text_area("Invoice Data", text, height=300)
 
-    # Basic audit checks
+    # Basic invoice checks
     st.subheader("Basic Invoice Checks")
 
     if "GST" in text or "gst" in text:
@@ -91,8 +98,4 @@ st.text_area("Invoice Data", text, height=300)
     else:
         st.warning("Total amount not clearly detected")
 
-
     st.info("Invoice processing completed.")
-
-
-
