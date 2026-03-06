@@ -4,7 +4,6 @@ from PIL import Image
 from pdf2image import convert_from_bytes
 
 # Tell Python where Tesseract is installed
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 # App title
 st.title("AI Invoice Auditor")
@@ -50,5 +49,6 @@ if uploaded_file is not None:
         st.success("Total amount detected")
     else:
         st.warning("Total amount not clearly detected")
+
 
     st.info("Invoice processing completed.")
