@@ -1,8 +1,29 @@
+import pandas as pd
+import re
 import streamlit as st
 import pytesseract
 from PIL import Image
 from pdf2image import convert_from_bytes
 
+if "invoice_db" not in st.session_state:
+    st.session_state.invoice_db = []
+
+def fraud_detection(invoice_number, total):
+
+    warnings = []
+
+    for inv in st.session_state.invoice_db:
+        if inv["invoice_number"] == invoice_number:
+            warnings.append("⚠ Duplicate Invoice Detected")
+
+    try:
+        amount = float(total.replace(",", ""))
+        if amount > 1000000:
+            warnings.append("⚠ High Value Invoice – Manual Review Required")
+    except:
+        pass
+
+    return warnings
 # Tell Python where Tesseract is installed
 
 # App title
@@ -52,3 +73,4 @@ if uploaded_file is not None:
 
 
     st.info("Invoice processing completed.")
+
