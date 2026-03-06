@@ -53,6 +53,26 @@ if uploaded_file is not None:
     # OCR text extraction
     st.subheader("Extracting Text...")
     text = pytesseract.image_to_string(image)
+    invoice_match = re.search(r"Invoice\s*No[:\s]*([A-Z0-9]+)", text)
+invoice_number = invoice_match.group(1) if invoice_match else "Unknown"
+
+total_match = re.search(r"Total.*?([0-9,]+\.[0-9]{2})", text)
+total_amount = total_match.group(1) if total_match else "0"
+
+warnings = fraud_detection(invoice_number, total_amount)
+
+st.subheader("Fraud Detection")
+
+if warnings:
+    for w in warnings:
+        st.error(w)
+else:
+    st.success("No fraud signals detected")
+
+st.session_state.invoice_db.append({
+    "invoice_number": invoice_number,
+    "total": total_amount
+})
 
     # Display extracted text
     st.subheader("Extracted Invoice Text")
@@ -73,4 +93,5 @@ if uploaded_file is not None:
 
 
     st.info("Invoice processing completed.")
+
 
