@@ -127,9 +127,9 @@ if uploaded_file is not None:
 
     c1,c2,c3 = st.columns(3)
 
-    c1.write("Invoice Number:",invoice_number)
-    c2.write("Vendor:",vendor)
-    c3.write("Amount:",total_amount)
+    c1.write(f"Invoice Number: {invoice_number}")
+    c2.write(f"Vendor: {vendor}")
+    c3.write(f"Amount: {total_amount}")
 
     # -------------------------
     # FRAUD DETECTION LOGIC
@@ -246,4 +246,5 @@ if not df.empty:
     )
 
 st.info("SmartAudit AI continuously analyzes invoice patterns to detect potential financial fraud.")
+
 
