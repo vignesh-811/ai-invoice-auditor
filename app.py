@@ -75,8 +75,8 @@ st.session_state.invoice_db.append({
 })
 
     # Display extracted text
-    st.subheader("Extracted Invoice Text")
-    st.text_area("Invoice Data", text, height=300)
+ st.subheader("Extracted Invoice Text")
+st.text_area("Invoice Data", text, height=300)
 
     # Basic audit checks
     st.subheader("Basic Invoice Checks")
@@ -93,5 +93,6 @@ st.session_state.invoice_db.append({
 
 
     st.info("Invoice processing completed.")
+
 
 
