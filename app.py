@@ -66,11 +66,11 @@ st.subheader("📊 Audit Dashboard")
 
 total_invoices = len(st.session_state.invoice_db)
 
-high_risk = sum(1 for x in st.session_state.invoice_db if x["risk"] > 60)
+high_risk = sum(1 for x in st.session_state.invoice_db if x.get("risk",0) > 60)
 
-medium_risk = sum(1 for x in st.session_state.invoice_db if 30 < x["risk"] <= 60)
+medium_risk = sum(1 for x in st.session_state.invoice_db if 30 < x.get("risk",0) <= 60)
 
-low_risk = sum(1 for x in st.session_state.invoice_db if x["risk"] <= 30)
+low_risk = sum(1 for x in st.session_state.invoice_db if x.get("risk",0) <= 30)
 
 col1,col2,col3,col4 = st.columns(4)
 
@@ -246,3 +246,4 @@ if not df.empty:
     )
 
 st.info("SmartAudit AI continuously analyzes invoice patterns to detect potential financial fraud.")
+
